@@ -19,9 +19,9 @@ class SeleniumDriver():
             return By.XPATH
         elif locatorType == "css":
             return By.CSS_SELECTOR
-        elif locatorType == "class":
+        elif locatorType == "classname":
             return By.CLASS_NAME
-        elif locatorType == "link":
+        elif locatorType == "linktext":
             return By.LINK_TEXT
         else:
             print("Locator type " + locatorType + " not correct/supported")
@@ -33,9 +33,9 @@ class SeleniumDriver():
             locatorType = locatorType.lower()
             byType = self.getByType(locatorType)
             element = self.driver.find_element(byType, locator)
-            print("Element Found with locator: " + locator + " and  locatorType: " + locatorType)
+            print("Element Found")
         except:
-            print("Element not found with locator: " + locator + " and  locatorType: " + locatorType)
+            print("Element not found")
         return element
 
     def elementClick(self, locator, locatorType="id"):
@@ -47,19 +47,9 @@ class SeleniumDriver():
             print("Cannot click on the element with locator: " + locator + " locatorType: " + locatorType)
             print_stack()
 
-    def sendKeys(self, data, locator, locatorType="id"):
+    def isElementPresent(self, locator, byType):
         try:
-            element = self.getElement(locator, locatorType)
-            element.send_keys(data)
-            print("Sent data on element with locator: " + locator + " locatorType: " + locatorType)
-        except:
-            print("Cannot send data on the element with locator: " + locator +
-                  " locatorType: " + locatorType)
-            print_stack()
-
-    def isElementPresent(self, locator, locatorType="id"):
-        try:
-            element = self.getElement(locator, locatorType)
+            element = self.driver.find_element(byType, locator)
             if element is not None:
                 print("Element Found")
                 return True
@@ -90,11 +80,12 @@ class SeleniumDriver():
             byType = self.getByType(locatorType)
             print("Waiting for maximum :: " + str(timeout) +
                   " :: seconds for element to be clickable")
-            wait = WebDriverWait(self.driver, timeout, poll_frequency=pollFrequency,
+            wait = WebDriverWait(self.driver, 10, poll_frequency=1,
                                  ignored_exceptions=[NoSuchElementException,
                                                      ElementNotVisibleException,
                                                      ElementNotSelectableException])
-            element = wait.until(EC.element_to_be_clickable((byType, locator)))
+            element = wait.until(EC.element_to_be_clickable((byType,
+                                                             "stopFilter_stops-0")))
             print("Element appeared on the web page")
         except:
             print("Element not appeared on the web page")
